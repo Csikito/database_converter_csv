@@ -1,9 +1,9 @@
 import wx
-from src.databaseConverter import DatabaseConverter
+from src.database_converter import DatabaseConverter
 
 
 if __name__ == '__main__':
     app = wx.App(False)
-    frame = DatabaseConverter(None, "Database Tables")
+    frame = DatabaseConverter(None, "Database Converter")
     frame.Show()
     app.MainLoop()

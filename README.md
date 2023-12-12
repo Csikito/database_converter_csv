@@ -12,7 +12,7 @@ A simple database conventer application with a graphical user interface (GUI) bu
 
 1.  Install required Python packages:
 
-    `$ pip install wxpython mysql-connector-python `
+    `$ pip install -r requirements.txt `
 
 2.  Configure the database connection by editing the config.ini file:
     <?>
