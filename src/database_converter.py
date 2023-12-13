@@ -6,8 +6,18 @@ from src.export_csv_file import export_tables
 
 
 class DatabaseConverter(wx.Frame):
+    """
+    A graphical user interface for converting database tables and exporting them to CSV files.
+
+    Attributes:
+    - conn: MySQL database connection object.
+    - cursor: Cursor object for executing MySQL queries.
+    - grid: wxPython Grid for displaying database tables.
+    """
     def __init__(self, parent, title):
-        super(DatabaseConverter, self).__init__(parent, title=title, size=(300, 400))
+        super(DatabaseConverter, self).__init__(
+            parent, title=title, size=(300, 400)
+        )
         # Load the database
         db_config = load_database_config()
 
@@ -18,14 +28,14 @@ class DatabaseConverter(wx.Frame):
         # Query tables
         self.cursor.execute("SHOW TABLES")
         tables = [table[0] for table in self.cursor.fetchall()]
-       
+
         # Defining Panel and BoxSizer
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
 
         # Create a table
         self.grid = wx.grid.Grid(panel, style=wx.LC_REPORT)
-        self.grid.CreateGrid(len(tables), 2)  
+        self.grid.CreateGrid(len(tables), 2)
         self.grid.SetColLabelValue(0, "✔")
         self.grid.SetColLabelValue(1, "Tables")
 
@@ -33,15 +43,19 @@ class DatabaseConverter(wx.Frame):
         self.grid.SetColFormatBool(0)
         for index, table in enumerate(tables):
             self.grid.SetCellValue(index, 1, table)
-            self.grid.SetCellAlignment(index, 0 , wx.ALIGN_CENTRE, wx.ALIGN_CENTRE,)
-            self.grid.SetCellAlignment(index, 1 , wx.ALIGN_CENTRE, wx.ALIGN_CENTRE,)
+            self.grid.SetCellAlignment(
+                index, 0, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE,
+            )
+            self.grid.SetCellAlignment(
+                index, 1, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE,
+            )
 
         # Removing serial numbers
         self.grid.SetRowLabelSize(0)
 
         # Setting the width of the first column
         self.grid.SetColSize(0, 30)
-        
+
         # Set text size
         font = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
         self.grid.SetDefaultCellFont(font)
@@ -53,26 +67,41 @@ class DatabaseConverter(wx.Frame):
         self.grid.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.on_cell_click)
 
         # Display table
-        vbox.Add(self.grid, proportion=1, flag=wx.EXPAND | wx.ALL, border=5)
+        vbox.Add(
+            self.grid, proportion=1, flag=wx.EXPAND | wx.ALL, border=5
+        )
         panel.SetSizer(vbox)
 
         # Save btn
         save_button = wx.Button(panel, label="Save")
         save_button.Bind(wx.EVT_BUTTON, self.export_tables)
-        vbox.Add(save_button, flag=wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, border=10)
-        panel.SetSizer(vbox)   
-    
+        vbox.Add(
+            save_button, flag=wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, border=10
+        )
+        panel.SetSizer(vbox)
+
     def on_cell_click(self, event):
+        """
+        Event handler for a left-click on a cell in the wxPython Grid.
+
+        Parameters:
+        - event: The wxPython event object.
+        """
         row = event.GetRow()
         col = event.GetCol()
 
         self.grid.EnableCellEditControl()
         self.grid.SetGridCursor(row, col)
         event.Skip()
-    
 
     def export_tables(self, event):
+        """
+        Event handler for the "Save" button click.
+
+        Parameters:
+        - event: The wxPython event object.
+        """
         export_tables(self.grid, self.cursor)
-        
+
         self.conn.close()
         self.Destroy()
