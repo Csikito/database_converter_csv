@@ -3,7 +3,7 @@ import os
 import csv
 
 
-def export_tables(grid, cursor):
+def export_tables(grid, cursor, tables):
     """
     Export selected database tables to CSV files.
 
@@ -20,6 +20,8 @@ def export_tables(grid, cursor):
     - cursor (mysql.connector.cursor.MySQLCursor): Cursor object for executing MySQL queries.
 
     """
+    table_number = 0
+
     # Tables based on the checked fields.
     selected_tables = [grid.GetCellValue(item, 1) for item in range(grid.GetNumberRows()) if grid.GetCellValue(item, 0)]
 
@@ -38,6 +40,12 @@ def export_tables(grid, cursor):
             writer = csv.writer(file)
             writer.writerow([i[0] for i in cursor.description])
             writer.writerows(rows)
+    
+    # Table number based on the checked fields and set checkboxes false
+    for index, table in enumerate(tables):
+        if grid.GetCellValue(index, 0) == "1":
+            table_number += 1
+        grid.SetCellValue(index, 0, "")
 
-    wx.MessageBox("CSV export completed!",
+    wx.MessageBox(f"{table_number} CSV file export completed!",
                   "Notification", wx.OK | wx.ICON_INFORMATION)
