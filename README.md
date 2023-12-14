@@ -41,3 +41,7 @@ A simple database conventer application with a graphical user interface (GUI) bu
 - The first column displays checkboxes for table selection, and the second column shows the table names.
 
 - CSV files are saved in the working directory, with each table's data saved in a separate file named after the table.
+
+## Image
+
+![img](https://github.com/Csikito/database_converter_csv/assets/84712542/fd5b3cfc-a021-4665-b7f2-f3ea41d25ad0)
